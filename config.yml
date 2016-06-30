@@ -3,6 +3,10 @@
 # return is the amount of material to return.
 # percent_chance is the chance to return the block. Scales with damage.
 # scale_amount is, if maturation is enabled, the amount extra to damage a block if it is not fully matured.  The forumla for calculating the extra damage is 1/(1-((time left of maturation) / (default amount of time for maturation))) * scale.  So if a block has 5 minutes left of maturation on a 10 minute default period with a scale of 3 we do 1/(5 / 10) * 3 = 6 damage. Setting scale amount to 0 disables this function.
+# effect allows to add particles around a reinforced block when it is created or damaged.
+#  type: The bukkit name of the particle.
+#  amount: How many particle should be displayed. 
+#  view_distance: From how far players will be able to see the particle. Leave blank or set to 0 to use default settings of the particle.
 internal_logging: true
 command_logging: true
 break_logging: true
@@ -19,6 +23,9 @@ reinforcements:
   acid_time: 1440
   scale_amount: 1
   lore:
+  effect:
+   type: FLYING_GLYPH
+   amount: 30
 # Delete the comment char to use lore.  Three spaces are required 
 # after lore. You can add multiple lines by adding -
 #   - Some string representation required for this reinforcement.
@@ -36,6 +43,9 @@ reinforcements:
   acid_time: 60
   scale_amount: 1
   lore:
+  effect:
+   type: FLYING_GLYPH
+   amount: 30
  stone:
   material: STONE
   requirements: 1
@@ -46,6 +56,9 @@ reinforcements:
   acid_time: 10
   scale_amount: 1
   lore:
+  effect:
+   type: FLYING_GLYPH
+   amount: 30
  bedrock:
   material: BEDROCK
   requirements: 1
@@ -56,6 +69,9 @@ reinforcements:
   acid_time: 147483646
   scale_amount: 1
   lore:
+  effect:
+   type: FLYING_GLYPH
+   amount: 30  
 #natural_reinforcements:
  #diamond_ore:
   #material: DIAMOND_ORE

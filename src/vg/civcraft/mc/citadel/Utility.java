@@ -12,8 +12,11 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Effect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -35,6 +38,7 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffectType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -196,7 +200,9 @@ public class Utility {
 					requirements, type.getRequiredAmount()));
         }
         player.updateInventory();
+        
         rm.saveInitialReinforcement(rein);
+        playReinforcementEffect(rein);
         return rein;
     }
     
@@ -239,6 +245,7 @@ public class Utility {
             throw new ReinforcemnetFortificationCancelException();
         }
         rm.saveInitialReinforcement(rein);
+        playReinforcementEffect(rein);
         return rein;        
     }
     
@@ -459,6 +466,9 @@ public class Utility {
                 // leave message
             }
             rm.saveReinforcement(reinforcement);
+            if(reinforcement instanceof PlayerReinforcement){
+    			playReinforcementEffect((PlayerReinforcement)reinforcement);
+            }
         }
         return cancelled;
     }
@@ -877,6 +887,35 @@ public class Utility {
         rm.saveInitialReinforcement(rein);
         return rein;
     }
+    
+    /**
+     * Display an effect defined in the config around a reinforcement.
+     * @param reinforcement The reinforcement to spawn the effect around. 
+     * @return Whether an effect was displayed or not. 
+     */
+	public static boolean playReinforcementEffect(PlayerReinforcement reinforcement) {
+		ReinforcementEffectType reinforcementEffect = ReinforcementType.getReinforcementType(reinforcement.getStackRepresentation()).getReinforcementEffect();
+		if(reinforcementEffect == null){
+			return false;
+		}
+		
+		Effect effect = reinforcementEffect.getEffect();
+		if (effect == null) {
+			return false;
+		}
+		
+		Location centerLocation = reinforcement.getLocation().clone().add(0.5, 0.5, 0.5);
+		for (int i = 0; i < reinforcementEffect.getAmount(); i++) {
+			if (reinforcementEffect.getViewDistance() != 0) {
+				centerLocation.getWorld().playEffect(centerLocation, effect, 0, reinforcementEffect.getViewDistance());
+			} else {
+				centerLocation.getWorld().playEffect(centerLocation, effect, 0);
+			}
+
+		}
+
+		return true;
+	}
     
     public static Block getAttachedChest(Block block) {
     	if (block == null) {

@@ -2,9 +2,13 @@ package vg.civcraft.mc.citadel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffectType;
 
 public class CitadelConfigManager {
 
@@ -83,6 +87,18 @@ public class CitadelConfigManager {
 		return config.getStringList("reinforcements." + type + ".lore");
 	}
 	
+	public static ReinforcementEffectType getReinforcementEffect(String type){
+		Effect effect = null; 
+		try {
+			effect = Effect.valueOf(config.getString("reinforcements." + type + ".effect.type"));
+		} catch (NullPointerException e) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "Invalid effect at: " + config.getCurrentPath());
+		}
+		int amount = config.getInt("reinforcements." + type + ".effect.amount");
+		int viewDistance = config.getInt("reinforcements." + type + ".effect.view_distance");
+		return new ReinforcementEffectType(effect, amount, viewDistance) ;
+	}
+
 	public static Material getNaturalReinforcementMaterial(String type){
 		return Material.valueOf(config.getString("natural_reinforcements." +
 				type + ".material"));
