@@ -8,7 +8,7 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffectType;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
 
 public class CitadelConfigManager {
 
@@ -87,16 +87,26 @@ public class CitadelConfigManager {
 		return config.getStringList("reinforcements." + type + ".lore");
 	}
 	
-	public static ReinforcementEffectType getReinforcementEffect(String type){
-		Effect effect = null; 
-		try {
-			effect = Effect.valueOf(config.getString("reinforcements." + type + ".effect.type"));
-		} catch (NullPointerException e) {
-			Citadel.getInstance().getLogger().log(Level.WARNING, "Invalid effect at: " + config.getCurrentPath());
+	public static ReinforcementEffect getReinforcementEffect(String type){
+		Effect effect = null;
+		if (config.getString("reinforcements." + type + ".effect.type") != null) {
+			try {
+				effect = Effect.valueOf(config.getString("reinforcements." + type + ".effect.type"));
+			} catch (IllegalArgumentException e) {
+				Citadel.getInstance().getLogger().log(Level.WARNING, "Invalid effect at: " + config.getCurrentPath());
+				return null;
+			}
+			int id = config.getInt("reinforcements." + type + ".effect.id", 0);
+			int data = config.getInt("reinforcements." + type + ".effect.data", 0);
+			float offsetX = (float) config.getDouble("reinforcements." + type + ".effect.offsetX", 0);
+			float offsetY = (float) config.getDouble("reinforcements." + type + ".effect.offsetY", 0);
+			float offsetZ = (float) config.getDouble("reinforcements." + type + ".effect.offsetZ", 0);
+			float speed = (float) config.getDouble("reinforcements." + type + ".effect.speed", 1);
+			int amount = config.getInt("reinforcements." + type + ".effect.particleCount", 1);
+			int viewDistance = config.getInt("reinforcements." + type + ".effect.view_distance", 16);
+			return new ReinforcementEffect(effect, id, data, offsetX, offsetY, offsetZ, speed, amount, viewDistance);
 		}
-		int amount = config.getInt("reinforcements." + type + ".effect.amount");
-		int viewDistance = config.getInt("reinforcements." + type + ".effect.view_distance");
-		return new ReinforcementEffectType(effect, amount, viewDistance) ;
+		return null;
 	}
 
 	public static Material getNaturalReinforcementMaterial(String type){

@@ -19,6 +19,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -38,7 +39,7 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
-import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffectType;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -894,29 +895,15 @@ public class Utility {
      * @return Whether an effect was displayed or not. 
      */
 	public static boolean playReinforcementEffect(PlayerReinforcement reinforcement) {
-		ReinforcementEffectType reinforcementEffect = ReinforcementType.getReinforcementType(reinforcement.getStackRepresentation()).getReinforcementEffect();
+		ReinforcementEffect reinforcementEffect = ReinforcementType.getReinforcementType(reinforcement.getStackRepresentation()).getReinforcementEffect();
 		if(reinforcementEffect == null){
 			return false;
 		}
-		
-		Effect effect = reinforcementEffect.getEffect();
-		if (effect == null) {
-			return false;
-		}
-		
 		Location centerLocation = reinforcement.getLocation().clone().add(0.5, 0.5, 0.5);
-		for (int i = 0; i < reinforcementEffect.getAmount(); i++) {
-			if (reinforcementEffect.getViewDistance() != 0) {
-				centerLocation.getWorld().playEffect(centerLocation, effect, 0, reinforcementEffect.getViewDistance());
-			} else {
-				centerLocation.getWorld().playEffect(centerLocation, effect, 0);
-			}
-
-		}
-
+		reinforcementEffect.playEffect(centerLocation);
 		return true;
 	}
-    
+
     public static Block getAttachedChest(Block block) {
     	if (block == null) {
 			Citadel.getInstance().getLogger().log(Level.WARNING,

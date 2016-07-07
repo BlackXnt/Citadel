@@ -24,14 +24,14 @@ public class ReinforcementType {
 	private int acidTime;
 	private int scale;
 	private ItemStack stack;
-	private ReinforcementEffectType effect;
+	private ReinforcementEffect effect;
 	
 	private static Map<ItemStack, ReinforcementType> types = 
 			new HashMap<ItemStack, ReinforcementType>();
 	
 	public ReinforcementType(Material mat, int amount, double percentReturn,
 			int returnValue, int hitpoints, int maturationTime, int acidTime,
-			int scale, List<String> lore, ReinforcementEffectType effect) {
+			int scale, List<String> lore, ReinforcementEffect effect) {
 		this.mat = mat;
 		this.amount = amount;
 		this.percentReturn = percentReturn/100;
@@ -61,18 +61,16 @@ public class ReinforcementType {
 			int acid = CitadelConfigManager.getAcidTime(type);
 			int maturation_scale = CitadelConfigManager.getMaturationScale(type);
 			List<String> lore = CitadelConfigManager.getLoreValues(type);
-			ReinforcementEffectType effect = CitadelConfigManager.getReinforcementEffect(type);
+			ReinforcementEffect effect = CitadelConfigManager.getReinforcementEffect(type);
 			new ReinforcementType(mat, amount, percentReturn, returnValue,
 					hitpoints, maturation, acid, maturation_scale, lore, effect);
 			if (CitadelConfigManager.shouldLogInternal()) {
 				Citadel.getInstance().getLogger().log(Level.INFO,
 						"Adding Reinforcement {0} with:\n  material {1} \n  amount {2} "
 								+ "\n  return rate {3} \n  return? {4} \n  health {5} \n  maturation {6} "
-								+ "\n  acid {7} \n  scaling {8} \n  lore: {9} \n  effect: \n   type {10} \n   amount {11} \n   viewDistance {12}",
+								+ "\n  acid {7} \n  scaling {8} \n  lore: {9} \n  effect: \n {10}",
 						new Object[] { type, mat.toString(), amount, percentReturn, returnValue, hitpoints, maturation,
-								acid, maturation_scale, (lore != null ? String.join("   ", lore) : ""),
-								(effect != null ? effect.getEffect() : ""), (effect != null ? effect.getAmount() : ""),
-								(effect != null ? effect.getViewDistance() != 0 ? effect.getViewDistance() : "" : "") });
+								acid, maturation_scale, (lore != null ? String.join("   ", lore) : ""), (effect != null ? effect : "")});
 			}
 		}
     }
@@ -127,7 +125,7 @@ public class ReinforcementType {
 	/**
 	 * @return Get the effect to spawn around this type of reinforcement when it is created or damaged.
 	 */
-	public ReinforcementEffectType getReinforcementEffect(){
+	public ReinforcementEffect getReinforcementEffect(){
 		return effect;
 	}
 	/**
